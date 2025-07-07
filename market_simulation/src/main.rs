@@ -1,8 +1,20 @@
-use core::order_book::OrderBook;
+use market_simulation::market::Market;
 
 fn main() {
-    let mut order_book = OrderBook::with_comodity("Gold");
-    order_book.add_sell(1.0, 1.0);
-    order_book.add_buy(1.0, 1.0);
-    dbg!(order_book);
+    let mut market = Market::new();
+
+    market.place_buy_order("Gold", 1.0, 1.0);
+    market.place_sell_order("Gold", 1.0, 1.0);
+    market.place_buy_order("Gold", 2.0, 1.5);
+    market.place_sell_order("Gold", 2.0, 1.5);
+
+    market.place_buy_order("Wood", 1.0, 1.0);
+    market.place_sell_order("Wood", 1.0, 1.0);
+    market.place_buy_order("Wood", 2.0, 1.5);
+    market.place_sell_order("Wood", 2.0, 1.5);
+
+    market.place_sell_order("Something Common", 2.0, 1.5);
+    market.place_buy_order("Something Rare", 2.0, 1.5);
+
+    dbg!(market);
 }

@@ -3,8 +3,8 @@ use std::{fmt, marker::PhantomData};
 #[derive(Default, Debug)]
 pub struct OrderBook<C> {
     pub commodity: C,
-    pub buy: Vec<Order<Buy>>,
-    pub sell: Vec<Order<Sell>>,
+    pub buy_orders: Vec<Order<Buy>>,
+    pub sell_orders: Vec<Order<Sell>>,
 }
 
 pub struct Order<OT: IsOrderType> {
@@ -33,19 +33,19 @@ impl<OT: IsOrderType> Order<OT> {
 }
 
 impl<C> OrderBook<C> {
-    pub fn with_comodity(commodity: C) -> Self {
+    pub fn with_commodity(commodity: C) -> Self {
         Self {
             commodity,
-            sell: vec![],
-            buy: vec![],
+            sell_orders: vec![],
+            buy_orders: vec![],
         }
     }
 
     pub fn add_buy(&mut self, volume: f32, price: f32) {
-        self.buy.push(Order::<Buy>::new(volume, price));
+        self.buy_orders.push(Order::<Buy>::new(volume, price));
     }
     pub fn add_sell(&mut self, volume: f32, price: f32) {
-        self.sell.push(Order::<Sell>::new(volume, price));
+        self.sell_orders.push(Order::<Sell>::new(volume, price));
     }
 }
 
