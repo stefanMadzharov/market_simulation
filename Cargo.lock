@@ -5,3 +5,10 @@ version = 3
 [[package]]
 name = "core"
 version = "0.1.0"
+
+[[package]]
+name = "market_simulation"
+version = "0.1.0"
+dependencies = [
+ "core",
+]
