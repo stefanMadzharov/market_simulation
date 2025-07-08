@@ -1,3 +1,6 @@
 [workspace]
 resolver = "2"
 members = ["core", "market_simulation"]
+
+[workspace.dependencies]
+rust_decimal = { version = "1.37.2", features = ["macros"] }

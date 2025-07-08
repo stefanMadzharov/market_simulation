@@ -1,4 +1,5 @@
 use core::order_book::OrderBook;
+use rust_decimal::Decimal;
 use std::{collections::HashMap, hash::Hash};
 
 #[derive(Debug)]
@@ -13,7 +14,7 @@ impl<C: Eq + PartialEq + Hash + Clone> Market<C> {
         }
     }
 
-    pub fn place_buy_order(&mut self, commodity: C, volume: f32, price: f32) {
+    pub fn place_buy_order(&mut self, commodity: C, volume: f32, price: Decimal) {
         self.order_books
             .entry(commodity.clone())
             .and_modify(|order_book| order_book.add_buy(volume, price))
@@ -24,7 +25,7 @@ impl<C: Eq + PartialEq + Hash + Clone> Market<C> {
             });
     }
 
-    pub fn place_sell_order(&mut self, commodity: C, volume: f32, price: f32) {
+    pub fn place_sell_order(&mut self, commodity: C, volume: f32, price: Decimal) {
         self.order_books
             .entry(commodity.clone())
             .and_modify(|order_book| order_book.add_sell(volume, price))
