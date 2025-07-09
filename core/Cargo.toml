@@ -6,3 +6,10 @@ edition = "2021"
 [dependencies]
 chrono = "0.4.41"
 rust_decimal = { workspace = true }
+
+[lib]
+path = "src/lib.rs"
+
+[[test]]
+name = "fifo_tests"
+path = "tests/matching_logic/fifo_tests.rs"

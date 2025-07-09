@@ -1,13 +1,14 @@
-use crate::matching_logic::{MatchingAlgorithm, Trade};
-use chrono::{DateTime, FixedOffset, Local};
-use rust_decimal::Decimal;
-use std::{
-    collections::{BTreeMap, VecDeque},
-    fmt,
-    marker::PhantomData,
+use crate::{
+    matching_logic::matching_algorithm::MatchingAlgorithm,
+    structs::{
+        order::{Buy, Order, Sell},
+        trade::Trade,
+    },
 };
+use rust_decimal::Decimal;
+use std::collections::{BTreeMap, VecDeque};
 
-#[derive(Default, Debug)]
+#[derive(Default, Debug, Clone)]
 pub struct OrderBook<C, I: Clone> {
     pub commodity: C,
     pub buy_orders: BTreeMap<Decimal, VecDeque<Order<Buy, I>>>,
@@ -18,38 +19,6 @@ pub struct OrderBook<C, I: Clone> {
     // All-or-None(AON) - should be done in a single execution
     // Immediate-or-cancel(IOC) - should be done instantly(single tick) or it gets deleted
      */
-}
-
-#[derive(Clone)]
-pub struct Order<OT: IsOrderType + Clone, I: Clone> {
-    pub volume: f32,
-    pub price: Decimal,
-    pub timestamp: DateTime<FixedOffset>,
-    pub initiator: I,
-    order_type: PhantomData<fn() -> OT>,
-}
-
-impl<OT: IsOrderType + Clone, I: Clone + fmt::Debug> fmt::Debug for Order<OT, I> {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        f.debug_struct("Order")
-            .field("volume", &self.volume)
-            .field("price", &self.price)
-            .field("timestamp", &self.timestamp)
-            .field("initiator", &self.initiator)
-            .finish()
-    }
-}
-
-impl<OT: IsOrderType + Clone, I: Clone> Order<OT, I> {
-    fn new(volume: f32, price: Decimal, initiator: &I) -> Self {
-        Self {
-            volume,
-            price,
-            initiator: initiator.clone(),
-            order_type: PhantomData::<fn() -> OT>,
-            timestamp: Local::now().into(),
-        }
-    }
 }
 
 impl<C: Clone, I: Clone> OrderBook<C, I> {
@@ -90,13 +59,3 @@ impl<C: Clone, I: Clone> OrderBook<C, I> {
         <MA as MatchingAlgorithm<C, I>>::execute_trades(self)
     }
 }
-
-pub trait IsOrderType: fmt::Debug {}
-
-#[derive(Debug, Clone, Copy)]
-pub struct Buy;
-impl IsOrderType for Buy {}
-
-#[derive(Debug, Clone, Copy)]
-pub struct Sell;
-impl IsOrderType for Sell {}

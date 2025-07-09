@@ -1,6 +1,6 @@
-use core::{
-    matching_logic::{MatchingAlgorithm, Trade},
-    order_book::OrderBook,
+use crate::{
+    matching_logic::matching_algorithm::MatchingAlgorithm,
+    structs::{order_book::OrderBook, trade::Trade},
 };
 use rust_decimal::Decimal;
 use std::{collections::HashMap, hash::Hash};
