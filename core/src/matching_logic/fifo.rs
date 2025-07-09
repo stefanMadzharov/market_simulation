@@ -15,61 +15,90 @@ use crate::{
 #[derive(Debug)]
 pub struct FIFO {}
 impl<C: Clone + std::fmt::Debug, I: Clone + std::fmt::Debug> MatchingAlgorithm<C, I> for FIFO {
-    fn execute_trades(order_book: &mut OrderBook<C, I>) -> Vec<Trade<C, I>> {
+    fn execute_trades(order_book: &mut OrderBook<C, I>) -> Vec<Trade<C, I>>
+    where
+        C: Clone,
+        I: Clone,
+    {
         let mut trades = Vec::new();
-        let sell_prices: Vec<_> = order_book.sell_orders.keys().cloned().collect();
-        let buy_prices: Vec<_> = order_book.buy_orders.keys().rev().cloned().collect();
-        let mut buy_prices_removed = 0;
-        if sell_prices.is_empty() || buy_prices.is_empty() {
+
+        if order_book.sell_orders.is_empty() || order_book.buy_orders.is_empty() {
             return trades;
         }
 
+        let sell_prices: Vec<_> = order_book.sell_orders.keys().cloned().collect();
+        let buy_prices: Vec<_> = order_book.buy_orders.keys().rev().cloned().collect();
+
         'sell_price_loop: for sell_price in sell_prices {
-            let sell_queue = order_book.sell_orders.get_mut(&sell_price).unwrap();
+            let sell_queue = match order_book.sell_orders.get_mut(&sell_price) {
+                Some(queue) => queue,
+                None => break,
+            };
 
-            'sell_queue_loop: while let Some(sell_order) = sell_queue.get_mut(0) {
-                dbg!(&buy_prices);
-                for buy_price in buy_prices.iter().cloned().skip(buy_prices_removed) {
-                    if buy_price < sell_order.price {
-                        break 'sell_price_loop;
-                    }
+            'sell_queue_loop: while !sell_queue.is_empty() {
+                let sell_order_filled = {
+                    let sell_order = sell_queue.get_mut(0).unwrap();
 
-                    let buy_queue = order_book.buy_orders.get_mut(&buy_price).unwrap();
+                    for buy_price in buy_prices.iter().cloned() {
+                        if buy_price < sell_order.price {
+                            break 'sell_price_loop;
+                        }
 
-                    while let Some(buy_order) = buy_queue.get_mut(0) {
-                        let trade_volume = sell_order.volume.min(buy_order.volume);
-                        assert!(trade_volume > 0.0);
+                        let mut buy_queue = match order_book.buy_orders.remove(&buy_price) {
+                            Some(queue) => queue,
+                            None => break,
+                        };
 
-                        trades.push(Trade {
-                            commodity: order_book.commodity.clone(),
-                            price: (buy_price + sell_price) / dec!(2), //TODO update with price_determination algorithm
-                            volume: trade_volume,
-                            seller: sell_order.initiator.clone(),
-                            buyer: buy_order.initiator.clone(),
-                            timestamp: Local::now().into(),
-                        });
+                        loop {
+                            let Some(buy_order) = buy_queue.get_mut(0) else {
+                                break;
+                            };
 
-                        sell_order.volume -= trade_volume;
-                        buy_order.volume -= trade_volume;
+                            let trade_volume = sell_order.volume.min(buy_order.volume);
+                            assert!(trade_volume > 0.0);
 
-                        if buy_order.volume == 0.0 {
-                            buy_queue.remove(0);
+                            trades.push(Trade {
+                                commodity: order_book.commodity.clone(),
+                                price: (buy_price + sell_price) / dec!(2),
+                                volume: trade_volume,
+                                seller: sell_order.initiator.clone(),
+                                buyer: buy_order.initiator.clone(),
+                                timestamp: Local::now().into(),
+                            });
+
+                            sell_order.volume -= trade_volume;
+                            buy_order.volume -= trade_volume;
+
+                            if buy_order.volume == 0.0 {
+                                buy_queue.remove(0);
+                            }
+
+                            if sell_order.volume == 0.0 {
+                                break;
+                            }
+
                             if buy_queue.is_empty() {
-                                order_book.buy_orders.remove(&buy_price);
-                                buy_prices_removed += 1;
-                                if sell_order.volume == 0.0 {
-                                    sell_queue.remove(0);
-                                    continue 'sell_queue_loop;
-                                }
                                 break;
                             }
                         }
 
+                        if !buy_queue.is_empty() {
+                            order_book.buy_orders.insert(buy_price, buy_queue);
+                        }
+
                         if sell_order.volume == 0.0 {
-                            sell_queue.remove(0);
-                            continue 'sell_queue_loop;
+                            break;
                         }
                     }
+
+                    sell_order.volume == 0.0
+                };
+
+                if sell_order_filled {
+                    sell_queue.remove(0);
+                    continue 'sell_queue_loop;
+                } else {
+                    break;
                 }
             }
 
