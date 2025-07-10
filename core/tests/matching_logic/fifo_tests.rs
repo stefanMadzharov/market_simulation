@@ -23,7 +23,7 @@ fn test_no_match_due_to_price() {
     market.place_sell_order("Gold", 1.0, dec!(10.0), &"Seller1".to_string());
 
     let trades = market.match_trades();
-    assert!(trades["Gold"].is_empty());
+    assert!(trades.is_empty());
 }
 
 #[test]
@@ -90,8 +90,7 @@ fn test_multiple_commodities() {
     market.place_sell_order("Wood", 1.0, dec!(5.0), &"SellerWood".to_string());
 
     let trades = market.match_trades();
-    assert!(trades["Gold"].is_empty());
-    assert!(trades["Wood"].is_empty());
+    assert!(trades.is_empty());
 }
 
 #[test]

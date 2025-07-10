@@ -54,10 +54,10 @@ where
     pub fn match_trades(&mut self) -> HashMap<C, Vec<Trade<C, I>>> {
         let mut all_trades = HashMap::new();
         for (commodity, order_book) in &mut self.order_books {
-            all_trades.insert(
-                commodity.clone(),
-                order_book.match_trades(&self.matching_algorithm),
-            );
+            let trades = order_book.match_trades(&self.matching_algorithm);
+            if !trades.is_empty() {
+                all_trades.insert(commodity.clone(), trades);
+            }
         }
         all_trades
     }
