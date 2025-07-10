@@ -1,10 +1,27 @@
-use core::{matching_logic::fifo::FIFO, structs::market::Market};
-use rust_decimal::dec;
+use rust_decimal::{dec, Decimal};
+use std::collections::HashMap;
+use trader::{
+    bot::Bot,
+    bot_components::{risk_aversion::RiskAversion, sentiment::Sentiment},
+    strategies::{is_strategy::IsStrategy, random_strategy::RandomStrategy},
+    trader::Trader,
+};
 
 fn main() {
-    let mut market = Market::new(FIFO {});
-    market.place_buy_order("Gold", 1.0, dec!(1.0), &"Buyer1".to_string());
-    market.place_buy_order("Wood", 1.0, dec!(1.0), &"Buyer1".to_string());
-    let trades = market.match_trades();
-    dbg!(&trades);
+    let trader = Trader {
+        balance: dec!(1000),
+        commodities_volume: [("Gold", dec!(5)), ("Wood", dec!(5))]
+            .into_iter()
+            .collect::<HashMap<&'static str, Decimal>>(),
+    };
+    let random_bot = Bot {
+        sentiment: Sentiment::Optimistic,
+        risk_aversion: RiskAversion::Risky,
+        trader,
+    };
+    let prices = [("Gold", dec!(20)), ("Wood", dec!(10))]
+        .into_iter()
+        .collect();
+    let positions = RandomStrategy::decide(&random_bot, &prices);
+    dbg!(positions);
 }

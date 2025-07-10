@@ -4,6 +4,7 @@ use crate::{
     strategies::decision::Decision,
 };
 use core::structs::market::IsCommodity;
+use rust_decimal::Decimal;
 use std::collections::HashMap;
 
 pub trait IsStrategy<C, S, RA>
@@ -12,5 +13,5 @@ where
     S: IsSentiment,
     RA: IsRiskAversion,
 {
-    fn decide(bot: &Bot<C, S, RA>) -> HashMap<C, Decision>;
+    fn decide(bot: &Bot<C, S, RA>, prices: &HashMap<C, Decimal>) -> HashMap<C, Decision>;
 }

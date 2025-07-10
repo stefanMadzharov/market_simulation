@@ -7,5 +7,5 @@ pub mod strategies {
     pub mod is_strategy;
     pub mod random_strategy;
 }
-mod bot;
-mod trader;
+pub mod bot;
+pub mod trader;
