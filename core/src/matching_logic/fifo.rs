@@ -51,7 +51,7 @@ impl<C: IsCommodity, I: Clone> MatchingAlgorithm<C, I> for FIFO {
                             };
 
                             let trade_volume = sell_order.volume.min(buy_order.volume);
-                            assert!(trade_volume > 0.0);
+                            assert!(trade_volume > dec!(0.0));
 
                             trades.push(Trade {
                                 commodity: order_book.commodity.clone(),
@@ -65,11 +65,11 @@ impl<C: IsCommodity, I: Clone> MatchingAlgorithm<C, I> for FIFO {
                             sell_order.volume -= trade_volume;
                             buy_order.volume -= trade_volume;
 
-                            if buy_order.volume == 0.0 {
+                            if buy_order.volume == dec!(0.0) {
                                 buy_queue.remove(0);
                             }
 
-                            if sell_order.volume == 0.0 {
+                            if sell_order.volume == dec!(0.0) {
                                 break;
                             }
 
@@ -82,12 +82,12 @@ impl<C: IsCommodity, I: Clone> MatchingAlgorithm<C, I> for FIFO {
                             order_book.buy_orders.insert(buy_price, buy_queue);
                         }
 
-                        if sell_order.volume == 0.0 {
+                        if sell_order.volume == dec!(0.0) {
                             break;
                         }
                     }
 
-                    sell_order.volume == 0.0
+                    sell_order.volume == dec!(0.0)
                 };
 
                 if sell_order_filled {

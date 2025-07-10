@@ -29,7 +29,13 @@ where
         }
     }
 
-    pub fn place_buy_order(&mut self, commodity: C, volume: f32, price: Decimal, initiator: &I) {
+    pub fn place_buy_order(
+        &mut self,
+        commodity: C,
+        volume: Decimal,
+        price: Decimal,
+        initiator: &I,
+    ) {
         self.order_books
             .entry(commodity.clone())
             .and_modify(|order_book| order_book.add_buy(volume, price, initiator))
@@ -40,7 +46,13 @@ where
             });
     }
 
-    pub fn place_sell_order(&mut self, commodity: C, volume: f32, price: Decimal, initiator: &I) {
+    pub fn place_sell_order(
+        &mut self,
+        commodity: C,
+        volume: Decimal,
+        price: Decimal,
+        initiator: &I,
+    ) {
         self.order_books
             .entry(commodity.clone())
             .and_modify(|order_book| order_book.add_sell(volume, price, initiator))

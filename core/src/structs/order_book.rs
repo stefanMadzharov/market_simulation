@@ -31,7 +31,7 @@ impl<C: IsCommodity, I: Clone> OrderBook<C, I> {
         }
     }
 
-    pub fn add_buy(&mut self, volume: f32, price: Decimal, initiator: &I) {
+    pub fn add_buy(&mut self, volume: Decimal, price: Decimal, initiator: &I) {
         self.buy_orders
             .entry(price)
             .and_modify(|queue| queue.push_back(Order::<Buy, I>::new(volume, price, initiator)))
@@ -42,7 +42,7 @@ impl<C: IsCommodity, I: Clone> OrderBook<C, I> {
             });
     }
 
-    pub fn add_sell(&mut self, volume: f32, price: Decimal, initiator: &I) {
+    pub fn add_sell(&mut self, volume: Decimal, price: Decimal, initiator: &I) {
         self.sell_orders
             .entry(price)
             .and_modify(|queue| queue.push_back(Order::<Sell, I>::new(volume, price, initiator)))

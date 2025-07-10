@@ -4,7 +4,7 @@ use std::{fmt, marker::PhantomData};
 
 #[derive(Clone)]
 pub struct Order<OT: IsOrderType + Clone, I: Clone> {
-    pub volume: f32,
+    pub volume: Decimal,
     pub price: Decimal,
     pub timestamp: DateTime<FixedOffset>,
     pub initiator: I,
@@ -23,7 +23,7 @@ impl<OT: IsOrderType + Clone, I: Clone + fmt::Debug> fmt::Debug for Order<OT, I>
 }
 
 impl<OT: IsOrderType + Clone, I: Clone> Order<OT, I> {
-    pub fn new(volume: f32, price: Decimal, initiator: &I) -> Self {
+    pub fn new(volume: Decimal, price: Decimal, initiator: &I) -> Self {
         Self {
             volume,
             price,
