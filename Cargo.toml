@@ -1,6 +1,7 @@
 [workspace]
 resolver = "2"
-members = ["core"]
+members = ["core", "trader"]
 
 [workspace.dependencies]
 rust_decimal = { version = "1.37.2", features = ["macros"] }
+core = { path = "./core" }

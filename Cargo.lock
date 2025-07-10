@@ -559,6 +559,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "traders"
+version = "0.1.0"
+dependencies = [
+ "core",
+ "rust_decimal",
+]
+
+[[package]]
 name = "unicode-ident"
 version = "1.0.18"
 source = "registry+https://github.com/rust-lang/crates.io-index"
