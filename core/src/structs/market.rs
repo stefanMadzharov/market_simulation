@@ -8,7 +8,7 @@ use std::{collections::HashMap, hash::Hash};
 #[derive(Debug)]
 pub struct Market<C, I, MA>
 where
-    C: Eq + PartialEq + Hash + Clone,
+    C: IsCommodity,
     I: Clone,
     MA: MatchingAlgorithm<C, I>,
 {
@@ -18,7 +18,7 @@ where
 
 impl<C, I, MA> Market<C, I, MA>
 where
-    C: Eq + PartialEq + Hash + Clone,
+    C: IsCommodity,
     I: Clone,
     MA: MatchingAlgorithm<C, I>,
 {
@@ -62,3 +62,7 @@ where
         all_trades
     }
 }
+
+pub trait IsCommodity: Clone + Eq + PartialEq + Hash {}
+
+impl<T: Clone + Eq + PartialEq + Hash> IsCommodity for T {}

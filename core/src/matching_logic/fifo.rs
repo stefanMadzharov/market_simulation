@@ -9,17 +9,13 @@ use rust_decimal::dec;
 
 use crate::{
     matching_logic::matching_algorithm::MatchingAlgorithm,
-    structs::{order_book::OrderBook, trade::Trade},
+    structs::{market::IsCommodity, order_book::OrderBook, trade::Trade},
 };
 
 #[derive(Debug)]
 pub struct FIFO {}
-impl<C: Clone + std::fmt::Debug, I: Clone + std::fmt::Debug> MatchingAlgorithm<C, I> for FIFO {
-    fn execute_trades(order_book: &mut OrderBook<C, I>) -> Vec<Trade<C, I>>
-    where
-        C: Clone,
-        I: Clone,
-    {
+impl<C: IsCommodity, I: Clone> MatchingAlgorithm<C, I> for FIFO {
+    fn execute_trades(order_book: &mut OrderBook<C, I>) -> Vec<Trade<C, I>> {
         let mut trades = Vec::new();
 
         if order_book.sell_orders.is_empty() || order_book.buy_orders.is_empty() {

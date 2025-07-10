@@ -1,6 +1,7 @@
 use crate::{
     matching_logic::matching_algorithm::MatchingAlgorithm,
     structs::{
+        market::IsCommodity,
         order::{Buy, Order, Sell},
         trade::Trade,
     },
@@ -9,7 +10,7 @@ use rust_decimal::Decimal;
 use std::collections::{BTreeMap, VecDeque};
 
 #[derive(Default, Debug, Clone)]
-pub struct OrderBook<C, I: Clone> {
+pub struct OrderBook<C: IsCommodity, I: Clone> {
     pub commodity: C,
     pub buy_orders: BTreeMap<Decimal, VecDeque<Order<Buy, I>>>,
     pub sell_orders: BTreeMap<Decimal, VecDeque<Order<Sell, I>>>,
@@ -21,7 +22,7 @@ pub struct OrderBook<C, I: Clone> {
      */
 }
 
-impl<C: Clone, I: Clone> OrderBook<C, I> {
+impl<C: IsCommodity, I: Clone> OrderBook<C, I> {
     pub fn with_commodity(commodity: C) -> Self {
         Self {
             commodity,

@@ -1,8 +1,10 @@
 use chrono::{DateTime, FixedOffset};
 use rust_decimal::Decimal;
 
+use crate::structs::market::IsCommodity;
+
 #[derive(Debug)]
-pub struct Trade<C, I: Clone> {
+pub struct Trade<C: IsCommodity, I: Clone> {
     pub commodity: C,
     pub volume: f32,
     pub price: Decimal,
