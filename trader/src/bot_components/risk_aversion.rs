@@ -16,10 +16,12 @@ impl IsRiskAversion for RiskAversion {
     fn calculate(&self) -> Decimal {
         match self {
             Self::VeryRiskAverse => Decimal::ONE,
-            Self::RiskAverse => dec!(0.75),
-            Self::Normal => dec!(0.5),
-            Self::Risky => dec!(0.25),
-            Self::Reckless => Decimal::ZERO,
+            Self::RiskAverse => dec!(0.5),
+
+            Self::Normal => Decimal::ZERO,
+
+            Self::Risky => dec!(-0.5),
+            Self::Reckless => -Decimal::ONE,
         }
     }
 }
