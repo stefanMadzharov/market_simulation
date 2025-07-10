@@ -15,11 +15,11 @@ pub trait IsRiskAversion<Res = Decimal> {
 impl IsRiskAversion for RiskAversion {
     fn calculate(&self) -> Decimal {
         match self {
-            Self::VeryRiskAverse => dec!(0.9),
-            Self::RiskAverse => dec!(0.2),
-            Self::Normal => dec!(0),
-            Self::Risky => dec!(-0.2),
-            Self::Reckless => dec!(-0.9),
+            Self::VeryRiskAverse => Decimal::ONE,
+            Self::RiskAverse => dec!(0.75),
+            Self::Normal => dec!(0.5),
+            Self::Risky => dec!(0.25),
+            Self::Reckless => Decimal::ZERO,
         }
     }
 }

@@ -15,11 +15,11 @@ pub enum Sentiment {
 impl IsSentiment for Sentiment {
     fn calculate(&self) -> Decimal {
         match self {
-            Self::VeryOptimistic => dec!(0.9),
-            Self::Optimistic => dec!(0.2),
-            Self::Normal => dec!(0),
-            Self::Pessimistic => dec!(-0.2),
-            Self::VeryPessimistic => dec!(-0.9),
+            Self::VeryOptimistic => Decimal::ONE,
+            Self::Optimistic => dec!(0.75),
+            Self::Normal => dec!(0.5),
+            Self::Pessimistic => dec!(0.25),
+            Self::VeryPessimistic => Decimal::ZERO,
         }
     }
 }
