@@ -5,13 +5,13 @@ use crate::{
     trader::Trader,
 };
 
-struct Bot<C, S, RA>
+pub struct Bot<C, S, RA>
 where
     C: IsCommodity,
     S: IsSentiment,
     RA: IsRiskAversion,
 {
-    sentiment: S,
-    risk_aversion: RA,
-    trader: Trader<C>,
+    pub sentiment: S,
+    pub risk_aversion: RA,
+    pub trader: Trader<C>,
 }

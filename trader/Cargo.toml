@@ -5,4 +5,5 @@ edition = "2021"
 
 [dependencies]
 core = { workspace = true }
+rand = "0.9.1"
 rust_decimal = { workspace = true }
